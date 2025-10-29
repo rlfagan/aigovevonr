@@ -1,6 +1,26 @@
 # Enterprise AI Policy Management and Enforcement Platform
 
-> Comprehensive architecture and implementation guide for an enterprise-grade AI governance platform that automates policy enforcement across all AI touchpoints.
+> **100% Open Source** - Comprehensive architecture and working implementation for enterprise-grade AI governance that automates policy enforcement across all AI touchpoints.
+
+## 🎯 Quick Start (Zero Budget!)
+
+**Want to get started immediately?** See **[QUICKSTART.md](./QUICKSTART.md)** for a working system deployed in 30 minutes using only open source tools.
+
+```bash
+# Clone and start (requires Docker only)
+docker-compose up -d
+# 🎉 You now have a working AI governance platform!
+```
+
+**What you get for $0**:
+- ✅ Policy engine (OPA) blocking unapproved AI services
+- ✅ REST API for policy decisions
+- ✅ PostgreSQL database with audit logs
+- ✅ Browser extension (Chrome/Edge)
+- ✅ Grafana dashboards
+- ✅ Production-ready architecture
+
+---
 
 ## 📋 Overview
 

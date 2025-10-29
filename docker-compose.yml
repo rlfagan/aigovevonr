@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  # Open Policy Agent - Core policy engine
+  opa:
+    image: openpolicyagent/opa:latest-rootless
+    container_name: ai-policy-opa
+    ports:
+      - "8181:8181"
+    command:
+      - "run"
+      - "--server"
+      - "--addr=0.0.0.0:8181"
+      - "--log-level=info"
+      - "/policies"
+    volumes:
+      - ./policies:/policies:ro
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8181/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # PostgreSQL with TimescaleDB extension
+  postgres:
+    image: timescale/timescaledb:latest-pg16
+    container_name: ai-policy-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: aigovuser
+      POSTGRES_PASSWORD: aigovpass
+      POSTGRES_DB: ai_governance
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aigovuser -d ai_governance"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Redis - Decision cache
+  redis:
+    image: redis:7-alpine
+    container_name: ai-policy-cache
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Decision API - FastAPI wrapper around OPA
+  decision-api:
+    build:
+      context: ./decision-api
+      dockerfile: Dockerfile
+    container_name: ai-policy-api
+    ports:
+      - "8000:8000"
+    environment:
+      OPA_URL: http://opa:8181
+      DATABASE_URL: postgresql://aigovuser:aigovpass@postgres:5432/ai_governance
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: info
+    depends_on:
+      opa:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./decision-api:/app:ro
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Grafana - Dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ai-policy-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_INSTALL_PLUGINS: grafana-postgresql-datasource
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - postgres
+
+  # Prometheus - Metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ai-policy-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  grafana_data:
+    driver: local
+  prometheus_data:
+    driver: local
+
+networks:
+  default:
+    name: ai-policy-network
