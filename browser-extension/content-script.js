@@ -1,7 +1,33 @@
 // content-script.js - PII Detection and Prevention
 // Monitors paste events and input fields for sensitive data
+// Also checks for personal email authentication
 
-console.log('AI Governance - PII Protection Active');
+console.log('AI Governance - PII Protection & Personal Email Detection Active');
+
+// Personal email domains (non-corporate)
+const PERSONAL_EMAIL_DOMAINS = [
+  // Major providers
+  'gmail.com', 'googlemail.com',
+  'yahoo.com', 'yahoo.co.uk', 'ymail.com', 'rocketmail.com',
+  'outlook.com', 'hotmail.com', 'live.com', 'msn.com',
+  'aol.com', 'aim.com',
+  'icloud.com', 'me.com', 'mac.com',
+  'protonmail.com', 'proton.me', 'pm.me',
+  'mail.com', 'email.com',
+  'zoho.com', 'zohomail.com',
+  'gmx.com', 'gmx.net',
+  'yandex.com', 'yandex.ru',
+  'mail.ru',
+  'inbox.com',
+  'fastmail.com',
+  'hushmail.com',
+  'tutanota.com', 'tuta.io',
+  'cock.li',
+  'disroot.org',
+  'mailfence.com',
+  'posteo.de',
+  'runbox.com'
+];
 
 // PII Detection Patterns
 const PII_PATTERNS = {
@@ -392,5 +418,271 @@ style.textContent = `
 document.head.appendChild(style);
 
 console.log('PII Protection initialized - monitoring paste events and forms');
+
+// ============================================================================
+// PERSONAL EMAIL DETECTION
+// ============================================================================
+
+// Check if user is authenticated with a personal email
+function checkPersonalEmailAuthentication() {
+  console.log('Checking for personal email authentication...');
+
+  // Check common selectors for user email displays
+  const emailSelectors = [
+    '[data-user-email]',
+    '[class*="user-email"]',
+    '[class*="account-email"]',
+    '[class*="profile-email"]',
+    'button[aria-label*="email"]',
+    'div[class*="user"] span[class*="email"]',
+    '.user-menu',
+    '.account-menu',
+    '.profile-dropdown'
+  ];
+
+  // Check localStorage/sessionStorage for email
+  const storageKeys = [
+    'user', 'userEmail', 'email', 'account', 'profile',
+    'auth', 'session', 'currentUser', 'loggedInUser'
+  ];
+
+  let detectedEmail = null;
+
+  // Check DOM elements
+  for (const selector of emailSelectors) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+      const text = el.textContent || el.getAttribute('data-user-email') || el.getAttribute('aria-label');
+      if (text) {
+        const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+        if (emailMatch) {
+          detectedEmail = emailMatch[0];
+        }
+      }
+    });
+    if (detectedEmail) break;
+  }
+
+  // Check localStorage
+  if (!detectedEmail) {
+    for (const key of storageKeys) {
+      try {
+        const value = localStorage.getItem(key);
+        if (value) {
+          // Try parsing as JSON
+          try {
+            const parsed = JSON.parse(value);
+            const emailFromJSON = findEmailInObject(parsed);
+            if (emailFromJSON) {
+              detectedEmail = emailFromJSON;
+              break;
+            }
+          } catch {
+            // Not JSON, check if it's an email
+            const emailMatch = value.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+            if (emailMatch) {
+              detectedEmail = emailMatch[0];
+              break;
+            }
+          }
+        }
+      } catch (e) {
+        // Storage access failed
+      }
+    }
+  }
+
+  // Check sessionStorage
+  if (!detectedEmail) {
+    for (const key of storageKeys) {
+      try {
+        const value = sessionStorage.getItem(key);
+        if (value) {
+          try {
+            const parsed = JSON.parse(value);
+            const emailFromJSON = findEmailInObject(parsed);
+            if (emailFromJSON) {
+              detectedEmail = emailFromJSON;
+              break;
+            }
+          } catch {
+            const emailMatch = value.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+            if (emailMatch) {
+              detectedEmail = emailMatch[0];
+              break;
+            }
+          }
+        }
+      } catch (e) {
+        // Storage access failed
+      }
+    }
+  }
+
+  if (detectedEmail) {
+    console.log('Detected authenticated email:', detectedEmail);
+    const isPersonal = isPersonalEmail(detectedEmail);
+
+    if (isPersonal) {
+      console.warn('⚠️ PERSONAL EMAIL DETECTED:', detectedEmail);
+      showPersonalEmailWarning(detectedEmail);
+      reportPersonalEmail(detectedEmail);
+    } else {
+      console.log('✅ Corporate email detected:', detectedEmail);
+    }
+  } else {
+    console.log('No authenticated email detected (yet)');
+  }
+
+  return detectedEmail;
+}
+
+// Helper: Find email in nested object
+function findEmailInObject(obj, depth = 0) {
+  if (depth > 5) return null; // Prevent infinite recursion
+
+  if (typeof obj === 'string') {
+    const match = obj.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+    return match ? match[0] : null;
+  }
+
+  if (typeof obj === 'object' && obj !== null) {
+    for (const key in obj) {
+      if (key.toLowerCase().includes('email') || key.toLowerCase().includes('mail')) {
+        const value = obj[key];
+        if (typeof value === 'string') {
+          const match = value.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+          if (match) return match[0];
+        }
+      }
+      const found = findEmailInObject(obj[key], depth + 1);
+      if (found) return found;
+    }
+  }
+
+  return null;
+}
+
+// Check if email is personal (not corporate)
+function isPersonalEmail(email) {
+  const domain = email.split('@')[1]?.toLowerCase();
+  return PERSONAL_EMAIL_DOMAINS.includes(domain);
+}
+
+// Show warning banner for personal email
+function showPersonalEmailWarning(email) {
+  const existingBanner = document.getElementById('personal-email-warning');
+  if (existingBanner) return; // Already shown
+
+  const banner = document.createElement('div');
+  banner.id = 'personal-email-warning';
+  banner.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    color: white;
+    padding: 16px 20px;
+    text-align: center;
+    z-index: 999999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    animation: slideDown 0.3s ease-out;
+  `;
+
+  banner.innerHTML = `
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <strong style="font-size: 16px;">⚠️ POLICY VIOLATION: Personal Email Detected</strong>
+      <div style="margin-top: 8px; font-size: 13px;">
+        You are authenticated with a personal email (<strong>${email}</strong>).
+        Corporate policy requires use of company email accounts only.
+      </div>
+      <div style="margin-top: 10px; font-size: 12px; opacity: 0.9;">
+        Please sign out and re-authenticate with your corporate email, or this session will be reported.
+      </div>
+    </div>
+  `;
+
+  // Add slide-down animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  if (document.body) {
+    document.body.prepend(banner);
+    // Adjust body padding to prevent content from being hidden
+    document.body.style.paddingTop = banner.offsetHeight + 'px';
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.prepend(banner);
+      document.body.style.paddingTop = banner.offsetHeight + 'px';
+    });
+  }
+
+  // Show notification
+  chrome.runtime.sendMessage({
+    type: 'PERSONAL_EMAIL_DETECTED',
+    email: email,
+    url: window.location.href
+  });
+}
+
+// Report personal email to backend
+async function reportPersonalEmail(email) {
+  try {
+    await fetch('http://localhost:8002/api/violations/personal-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        service: window.location.hostname,
+        url: window.location.href,
+        timestamp: new Date().toISOString(),
+        user_agent: navigator.userAgent
+      })
+    });
+    console.log('Personal email violation reported');
+  } catch (error) {
+    console.error('Failed to report personal email:', error);
+  }
+}
+
+// Run check on page load
+setTimeout(() => {
+  checkPersonalEmailAuthentication();
+}, 2000); // Wait 2 seconds for page to load
+
+// Re-check periodically (in case user logs in after page load)
+setInterval(() => {
+  checkPersonalEmailAuthentication();
+}, 10000); // Check every 10 seconds
+
+// Also check when DOM changes (mutation observer)
+const observer = new MutationObserver((mutations) => {
+  // Only check if there are significant changes
+  if (mutations.length > 5) {
+    checkPersonalEmailAuthentication();
+  }
+});
+
+observer.observe(document.body || document.documentElement, {
+  childList: true,
+  subtree: true
+});
+
+console.log('Personal email detection initialized');
 
 } // End of isAIService check

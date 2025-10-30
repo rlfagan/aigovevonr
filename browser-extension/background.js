@@ -5,8 +5,9 @@ const DECISION_API_URL = 'http://localhost:8002';  // Change to your API URL
 const USER_EMAIL = 'john.doe@company.com';  // In production, get from SSO
 const USER_DEPARTMENT = 'engineering';
 
-// AI service domains to monitor
+// AI service domains to monitor (90+ services)
 const AI_SERVICE_PATTERNS = [
+  // Chat & Conversational AI
   'openai.com',
   'chatgpt.com',
   'anthropic.com',
@@ -15,9 +16,167 @@ const AI_SERVICE_PATTERNS = [
   'gemini.google.com',
   'character.ai',
   'replika.com',
+  'poe.com',
+  'perplexity.ai',
+  'you.com',
+  'pi.ai',
+  'inflection.ai',
+  'huggingface.co/chat',
+  'chat.openai.com',
+
+  // Image Generation
   'midjourney.com',
+  'stability.ai',
+  'stablediffusionweb.com',
+  'lexica.art',
+  'playground.ai',
+  'craiyon.com',
+  'dall-e.com',
+  'hotpot.ai',
+  'artbreeder.com',
+  'nightcafe.studio',
+  'starryai.com',
+  'dreamstudio.ai',
+  'bluewillow.ai',
+
+  // Writing & Content
   'jasper.ai',
-  'copilot.github.com'
+  'copy.ai',
+  'writesonic.com',
+  'rytr.me',
+  'contentbot.ai',
+  'peppertype.ai',
+  'shortly.ai',
+  'wordtune.com',
+  'grammarly.com',
+  'quillbot.com',
+  'wordai.com',
+  'article-forge.com',
+  'frase.io',
+  'outwrite.com',
+
+  // Code Assistance
+  'copilot.github.com',
+  'github.com/features/copilot',
+  'tabnine.com',
+  'codeium.com',
+  'replit.com/ai',
+  'cursor.sh',
+  'sourcegraph.com/cody',
+  'aws.amazon.com/codewhisperer',
+  'aiXcoder.com',
+
+  // Productivity & Business
+  'notion.ai',
+  'notion.so',
+  'otter.ai',
+  'fireflies.ai',
+  'read.ai',
+  'meetgeek.ai',
+  'tldv.io',
+  'grain.com',
+  'sembly.ai',
+  'microsoft.com/en-us/microsoft-365/copilot',
+  'copilot.microsoft.com',
+  'bing.com/chat',
+
+  // Design Tools
+  'canva.com',
+  'designs.ai',
+  'autodraw.com',
+  'remove.bg',
+  'cleanup.pictures',
+  'clipdrop.co',
+  'photor.io',
+  'palette.fm',
+
+  // Voice & Audio
+  'murf.ai',
+  'play.ht',
+  'resemble.ai',
+  'descript.com',
+  'speechify.com',
+  'elevenlabs.io',
+  'wellsaidlabs.com',
+  'voice.ai',
+  'voicemod.net',
+
+  // Video Generation
+  'runway.ml',
+  'runwayml.com',
+  'synthesia.io',
+  'pictory.ai',
+  'steve.ai',
+  'invideo.io',
+  'descript.com',
+  'lumen5.com',
+  'elai.io',
+
+  // Research & Analysis
+  'consensus.app',
+  'elicit.org',
+  'scite.ai',
+  'semantic-scholar.org',
+  'scholarcy.com',
+  'explainpaper.com',
+  'paperpile.com',
+
+  // Chatbots & Customer Service
+  'intercom.com',
+  'drift.com',
+  'ada.cx',
+  'tidio.com',
+  'landbot.io',
+  'botsonic.ai',
+
+  // Marketing & SEO
+  'surfer-seo.com',
+  'marketmuse.com',
+  'clearscope.io',
+  'semrush.com',
+  'adcreative.ai',
+
+  // Legal & Compliance
+  'harvey.ai',
+  'casetext.com',
+  'lawgeex.com',
+  'luminance.com',
+  'everlaw.com',
+
+  // HR & Recruiting
+  'paradox.ai',
+  'eightfold.ai',
+  'phenom.com',
+  'hiretual.com',
+  'fetcher.ai',
+
+  // Data & Analytics
+  'akkio.com',
+  'obviously.ai',
+  'levity.ai',
+  'monkeylearn.com',
+
+  // Translation
+  'deepl.com',
+  'reverso.net',
+  'linguee.com',
+
+  // Education & Training
+  'khanmigo.ai',
+  'quizlet.com',
+  'duolingo.com',
+  'coursera.org',
+  'udemy.com',
+
+  // Healthcare (if applicable)
+  'ada.com',
+  'buoy.health',
+  'k.health',
+
+  // Finance
+  'kensho.com',
+  'dataminr.com',
+  'alphasense.com'
 ];
 
 // Statistics

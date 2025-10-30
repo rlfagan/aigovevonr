@@ -16,6 +16,9 @@ import time
 from datetime import datetime
 import hashlib
 
+# Import policy router
+from app.api.policy import router as policy_router
+
 # Configuration from environment
 OPA_URL = os.getenv("OPA_URL", "http://localhost:8181")
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://aigovuser:aigovpass@localhost:5432/ai_governance")
@@ -37,6 +40,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include policy router
+app.include_router(policy_router)
 
 # Global connections
 db_pool = None
