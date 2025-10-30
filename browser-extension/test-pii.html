@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PII Protection Test Page</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            font-size: 14px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .instructions {
+            background: #fffbea;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #fbbf24;
+        }
+        .test-data {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .test-data:hover {
+            background: #e0e0e0;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .critical { background: #fee; color: #c00; }
+        .high { background: #ffeaa7; color: #d63031; }
+        .medium { background: #e3f2fd; color: #1976d2; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        .status.checking {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .status.active {
+            background: #f0fff4;
+            color: #22543d;
+        }
+        .status.inactive {
+            background: #fee;
+            color: #c00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ PII Protection Test Page</h1>
+
+        <div id="status" class="status checking">
+            🔍 Checking if PII protection is active...
+        </div>
+
+        <div class="instructions">
+            <strong>📋 How to test:</strong><br>
+            1. Click on any test data below to copy it<br>
+            2. Try to paste it into the text area below<br>
+            3. If PII protection is working, you'll see a warning modal for critical data
+        </div>
+
+        <div class="test-section">
+            <h3>Test Data - Click to Copy:</h3>
+
+            <div class="test-data" onclick="copyText(this)" data-text="123-45-6789">
+                SSN: 123-45-6789 <span class="badge critical">CRITICAL</span>
+            </div>
+
+            <div class="test-data" onclick="copyText(this)" data-text="4532-1234-5678-9010">
+                Credit Card: 4532-1234-5678-9010 <span class="badge critical">CRITICAL</span>
+            </div>
+
+            <div class="test-data" onclick="copyText(this)" data-text="api_key=sk_live_abc123def456ghi789">
+                API Key: api_key=sk_live_abc123def456ghi789 <span class="badge critical">CRITICAL</span>
+            </div>
+
+            <div class="test-data" onclick="copyText(this)" data-text="john.doe@company.com">
+                Email: john.doe@company.com <span class="badge high">HIGH</span>
+            </div>
+
+            <div class="test-data" onclick="copyText(this)" data-text="(555) 123-4567">
+                Phone: (555) 123-4567 <span class="badge medium">MEDIUM</span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test Input Area:</h3>
+            <p>Try pasting the test data here:</p>
+            <textarea id="testInput" placeholder="Paste test data here..."></textarea>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button onclick="clearText()">Clear Text</button>
+            <button onclick="checkExtension()">Recheck Extension</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Console Output:</h3>
+            <p>Open Developer Tools (F12) → Console tab to see PII detection logs</p>
+            <div id="console-output" style="background: #000; color: #0f0; padding: 15px; border-radius: 4px; font-family: monospace; min-height: 100px; font-size: 12px;">
+                Waiting for paste events...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let logCount = 0;
+
+        function addLog(message) {
+            logCount++;
+            const output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            output.innerHTML = `[${timestamp}] ${message}\n` + output.innerHTML;
+        }
+
+        function copyText(element) {
+            const text = element.dataset.text;
+            navigator.clipboard.writeText(text).then(() => {
+                addLog(`✓ Copied: ${text}`);
+                element.style.background = '#c8e6c9';
+                setTimeout(() => {
+                    element.style.background = '#f0f0f0';
+                }, 500);
+            });
+        }
+
+        function clearText() {
+            document.getElementById('testInput').value = '';
+            addLog('✓ Text area cleared');
+        }
+
+        function checkExtension() {
+            addLog('🔍 Checking for PII protection...');
+
+            // Check if our content script loaded
+            if (window.piiProtectionActive) {
+                updateStatus('active', '✅ PII Protection is ACTIVE');
+                addLog('✅ Content script detected');
+            } else {
+                updateStatus('inactive', '❌ PII Protection is NOT active');
+                addLog('❌ Content script not detected');
+                addLog('💡 Go to chrome://extensions/ and reload "AI Governance Shield"');
+            }
+        }
+
+        function updateStatus(type, message) {
+            const status = document.getElementById('status');
+            status.className = `status ${type}`;
+            status.textContent = message;
+        }
+
+        // Listen for paste events
+        document.getElementById('testInput').addEventListener('paste', (e) => {
+            const text = e.clipboardData.getData('text');
+            addLog(`📋 Paste detected: "${text}"`);
+
+            if (text.match(/\d{3}-?\d{2}-?\d{4}/)) {
+                addLog('⚠️ SSN pattern detected!');
+            }
+            if (text.match(/\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}/)) {
+                addLog('⚠️ Credit card pattern detected!');
+            }
+        });
+
+        // Check on load
+        setTimeout(() => {
+            checkExtension();
+        }, 1000);
+
+        // Make testable from content script
+        window.testPageReady = true;
+
+        addLog('🚀 Test page loaded');
+        addLog('💡 Try copying and pasting the test data above');
+    </script>
+</body>
+</html>

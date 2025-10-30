@@ -2,11 +2,13 @@
   "manifest_version": 3,
   "name": "AI Governance Shield",
   "description": "Open source AI policy enforcement",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "permissions": [
     "webRequest",
     "storage",
-    "tabs"
+    "tabs",
+    "scripting",
+    "notifications"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -31,6 +33,26 @@
     {
       "resources": ["blocked.html"],
       "matches": ["<all_urls>"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.openai.com/*",
+        "*://*.chatgpt.com/*",
+        "*://*.anthropic.com/*",
+        "*://*.claude.ai/*",
+        "*://*.bard.google.com/*",
+        "*://*.gemini.google.com/*",
+        "*://*.character.ai/*",
+        "*://*.replika.com/*",
+        "*://*.midjourney.com/*",
+        "*://*.jasper.ai/*",
+        "*://*.copilot.github.com/*"
+      ],
+      "js": ["content-script.js"],
+      "run_at": "document_start",
+      "all_frames": false
     }
   ]
 }

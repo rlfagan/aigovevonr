@@ -12,7 +12,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ==========================================
 
 CREATE TABLE decisions (
-    decision_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    decision_id UUID DEFAULT uuid_generate_v4(),
     timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     -- User context
@@ -47,11 +47,17 @@ CREATE TABLE decisions (
 
     -- Metadata
     request_id UUID,
-    metadata JSONB
+    metadata JSONB,
+
+    -- Composite primary key including timestamp for TimescaleDB partitioning
+    PRIMARY KEY (decision_id, timestamp)
 );
 
 -- Convert to TimescaleDB hypertable (partitioned by time)
 SELECT create_hypertable('decisions', 'timestamp');
+
+-- Add unique constraint on decision_id for foreign key references
+CREATE UNIQUE INDEX idx_decisions_id_unique ON decisions(decision_id, timestamp);
 
 -- Create indices for common queries
 CREATE INDEX idx_decisions_user ON decisions(user_email, timestamp DESC);
@@ -155,7 +161,7 @@ INSERT INTO users (email, department, training_completed, training_completed_dat
 
 CREATE TABLE violations (
     violation_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    decision_id UUID NOT NULL REFERENCES decisions(decision_id),
+    decision_id UUID NOT NULL,  -- References decisions but without FK constraint due to composite PK
     timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     -- Violator

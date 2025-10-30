@@ -13,6 +13,7 @@ This is a **100% open source, zero-budget** implementation of an Enterprise AI P
 - ✅ **Database** (PostgreSQL + TimescaleDB) - Audit logs and analytics
 - ✅ **Cache** (Redis) - Fast decision caching
 - ✅ **Browser Extension** (Chrome/Edge) - Blocks unapproved AI services
+- ✅ **Admin UI** (Next.js + React) - Web dashboard for management
 - ✅ **Dashboards** (Grafana) - Visualize usage and violations
 - ✅ **Monitoring** (Prometheus) - System health metrics
 
@@ -50,9 +51,10 @@ docker-compose ps
 ```
 
 **Services will be running at**:
-- **Decision API**: http://localhost:8000
+- **Admin UI**: http://localhost:3001 (Main dashboard - start here!)
+- **Decision API**: http://localhost:8002
 - **OPA Policy Engine**: http://localhost:8181
-- **PostgreSQL**: localhost:5432
+- **PostgreSQL**: localhost:5434
 - **Grafana Dashboards**: http://localhost:3000 (admin/admin)
 - **Prometheus**: http://localhost:9090
 
@@ -64,10 +66,10 @@ docker-compose ps
 
 ```bash
 # Check health
-curl http://localhost:8000/health
+curl http://localhost:8002/health
 
 # Test a policy decision (approve ChatGPT for engineering)
-curl -X POST http://localhost:8000/evaluate \
+curl -X POST http://localhost:8002/evaluate \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -89,7 +91,7 @@ curl -X POST http://localhost:8000/evaluate \
 
 ```bash
 # Try to access Character.AI (prohibited)
-curl -X POST http://localhost:8000/evaluate \
+curl -X POST http://localhost:8002/evaluate \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -110,7 +112,7 @@ curl -X POST http://localhost:8000/evaluate \
 ### Check the database
 
 ```bash
-# Connect to PostgreSQL
+# Connect to PostgreSQL (note: connects directly to container, not via port 5434)
 docker exec -it ai-policy-db psql -U aigovuser -d ai_governance
 
 # View recent decisions
@@ -128,7 +130,50 @@ SELECT * FROM daily_summary;
 
 ---
 
-## 🌐 Step 3: Install Browser Extension (5 minutes)
+## 🖥️ Step 3: Start Admin UI (2 minutes)
+
+The Admin UI provides a modern web dashboard for monitoring your AI governance platform.
+
+```bash
+# Navigate to admin-ui directory
+cd admin-ui
+
+# Install dependencies (first time only)
+npm install
+
+# Start the development server
+npm run dev
+```
+
+The Admin UI will be available at **http://localhost:3001**
+
+### What you'll see:
+- 📊 **Real-time Statistics** - Total requests, allowed/denied/review counts
+- 👥 **Active Users** - Current users being monitored
+- 📋 **Active Policies** - Number of enforced policies
+- 📈 **Recent Decisions** - Live feed of policy decisions
+- 🔗 **Quick Links** - Direct access to Grafana, Prometheus, and API docs
+- ✅ **System Health** - Real-time health check of the Decision API
+
+### Production Deployment
+
+For production, build and serve the Admin UI:
+
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Or use PM2 for process management
+npm install -g pm2
+pm2 start npm --name "ai-governance-admin-ui" -- start
+```
+
+---
+
+## 🌐 Step 4: Install Browser Extension (5 minutes)
 
 ### Chrome/Edge Installation
 
@@ -152,7 +197,7 @@ chrome://extensions/
 // Edit browser-extension/background.js
 // Change these variables to match your setup:
 
-const DECISION_API_URL = 'http://localhost:8000';
+const DECISION_API_URL = 'http://localhost:8002';
 const USER_EMAIL = 'your.email@company.com';
 const USER_DEPARTMENT = 'your_department';
 ```
@@ -178,7 +223,7 @@ convert -size 128x128 xc:#667eea browser-extension/icons/icon128.png
 
 ---
 
-## 📊 Step 4: View Dashboards (5 minutes)
+## 📊 Step 5: View Dashboards (5 minutes)
 
 ### Grafana Setup
 
@@ -222,7 +267,7 @@ SELECT * FROM top_services LIMIT 10
 
 ---
 
-## 🎨 Customizing Policies (10 minutes)
+## 🎨 Step 6: Customizing Policies (10 minutes)
 
 ### Edit the Policy File
 
@@ -283,7 +328,7 @@ approved_services := {
 docker-compose restart opa
 
 # Test immediately
-curl -X POST http://localhost:8000/evaluate \
+curl -X POST http://localhost:8002/evaluate \
   -H "Content-Type: application/json" \
   -d '{"user": {"email": "test@company.com", "department": "engineering", "training_completed": true}, "action": "access_ai_service", "resource": {"url": "https://your-service.com"}}'
 ```
@@ -442,19 +487,19 @@ cat > test-policies.sh <<'EOF'
 #!/bin/bash
 
 echo "Testing approved service..."
-curl -s -X POST http://localhost:8000/evaluate \
+curl -s -X POST http://localhost:8002/evaluate \
   -H "Content-Type: application/json" \
   -d '{"user": {"email": "test@company.com", "department": "engineering", "training_completed": true}, "action": "access_ai_service", "resource": {"url": "https://chatgpt.com"}}' \
   | jq '.decision'
 
 echo "Testing blocked service..."
-curl -s -X POST http://localhost:8000/evaluate \
+curl -s -X POST http://localhost:8002/evaluate \
   -H "Content-Type: application/json" \
   -d '{"user": {"email": "test@company.com", "department": "engineering", "training_completed": true}, "action": "access_ai_service", "resource": {"url": "https://character.ai"}}' \
   | jq '.decision'
 
 echo "Testing untrained user..."
-curl -s -X POST http://localhost:8000/evaluate \
+curl -s -X POST http://localhost:8002/evaluate \
   -H "Content-Type: application/json" \
   -d '{"user": {"email": "test@company.com", "department": "engineering", "training_completed": false}, "action": "access_ai_service", "resource": {"url": "https://chatgpt.com"}}' \
   | jq '.decision'
@@ -468,7 +513,7 @@ chmod +x test-policies.sh
 
 ```bash
 # Monitor decision latency
-curl http://localhost:8000/stats/summary
+curl http://localhost:8002/stats/summary
 
 # Check cache hit rate
 docker exec -it ai-policy-cache redis-cli INFO stats | grep keyspace
@@ -505,7 +550,7 @@ docker-compose ps
 docker-compose logs --tail=50
 
 # Check API health
-curl http://localhost:8000/health | jq
+curl http://localhost:8002/health | jq
 
 # Check database
 docker exec -it ai-policy-db psql -U aigovuser -d ai_governance -c "SELECT COUNT(*) FROM decisions"
@@ -518,7 +563,7 @@ docker exec -it ai-policy-db psql -U aigovuser -d ai_governance -c "SELECT COUNT
 After completing this guide, you should have:
 
 - [ ] All Docker services running (green status)
-- [ ] Decision API responding at http://localhost:8000
+- [ ] Decision API responding at http://localhost:8002
 - [ ] Policies blocking Character.AI and Replika
 - [ ] Policies allowing ChatGPT for engineering department
 - [ ] Browser extension installed and working

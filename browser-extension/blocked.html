@@ -199,34 +199,12 @@
             <a href="https://policy-portal.company.com/approved-services" class="button button-primary">
                 View Approved Services
             </a>
-            <button class="button button-secondary" onclick="window.close()">
+            <button class="button button-secondary" onclick="closeTab()">
                 Close Tab
             </button>
         </div>
     </div>
 
-    <script>
-        // Extract parameters from URL
-        const params = new URLSearchParams(window.location.search);
-        const reason = params.get('reason') || 'Policy violation detected';
-        const blockedUrl = params.get('url') || 'Unknown';
-        const riskScore = parseInt(params.get('risk')) || 0;
-
-        // Update page content
-        document.getElementById('reason').textContent = reason;
-        document.getElementById('blocked-url').textContent = blockedUrl;
-
-        // Update risk badge
-        const riskBadge = document.getElementById('risk-badge');
-        riskBadge.textContent = `Risk Score: ${riskScore}`;
-
-        if (riskScore >= 80) {
-            riskBadge.className = 'risk-badge risk-critical';
-        } else if (riskScore >= 60) {
-            riskBadge.className = 'risk-badge risk-high';
-        } else {
-            riskBadge.className = 'risk-badge risk-medium';
-        }
-    </script>
+    <script src="blocked.js"></script>
 </body>
 </html>

@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   # Open Policy Agent - Core policy engine
   opa:
-    image: openpolicyagent/opa:latest-rootless
+    image: openpolicyagent/opa:latest
     container_name: ai-policy-opa
     ports:
       - "8181:8181"
@@ -15,18 +13,13 @@ services:
       - "/policies"
     volumes:
       - ./policies:/policies:ro
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8181/health"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
 
   # PostgreSQL with TimescaleDB extension
   postgres:
     image: timescale/timescaledb:latest-pg16
     container_name: ai-policy-db
     ports:
-      - "5432:5432"
+      - "5434:5432"
     environment:
       POSTGRES_USER: aigovuser
       POSTGRES_PASSWORD: aigovpass
@@ -45,7 +38,7 @@ services:
     image: redis:7-alpine
     container_name: ai-policy-cache
     ports:
-      - "6379:6379"
+      - "6380:6379"
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
@@ -62,7 +55,7 @@ services:
       dockerfile: Dockerfile
     container_name: ai-policy-api
     ports:
-      - "8000:8000"
+      - "8002:8000"
     environment:
       OPA_URL: http://opa:8181
       DATABASE_URL: postgresql://aigovuser:aigovpass@postgres:5432/ai_governance
@@ -70,7 +63,7 @@ services:
       LOG_LEVEL: info
     depends_on:
       opa:
-        condition: service_healthy
+        condition: service_started
       postgres:
         condition: service_healthy
       redis:
