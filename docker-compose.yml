@@ -12,7 +12,7 @@ services:
       - "--log-level=info"
       - "/policies"
     volumes:
-      - ./policies:/policies:ro
+      - ./policies/active:/policies:ro
 
   # PostgreSQL with TimescaleDB extension
   postgres:
@@ -72,6 +72,26 @@ services:
       - ./policies:/policies:ro
       - api_data:/app/data
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Copilot Studio Proxy - Runtime protection
+  copilot-studio-proxy:
+    build:
+      context: ./copilot-studio-proxy
+      dockerfile: Dockerfile
+    container_name: ai-policy-copilot-proxy
+    ports:
+      - "8003:8003"
+    environment:
+      COPILOT_STUDIO_API: ${COPILOT_STUDIO_API:-https://api.powerva.microsoft.com}
+      DECISION_API_URL: http://decision-api:8000
+      DATABASE_URL: postgresql://aigovuser:aigovpass@postgres:5432/ai_governance
+      API_KEY: ${API_KEY:-}
+    depends_on:
+      decision-api:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+    command: uvicorn main:app --host 0.0.0.0 --port 8003 --reload
 
   # Grafana - Dashboards
   grafana:

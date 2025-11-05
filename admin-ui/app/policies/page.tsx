@@ -211,33 +211,33 @@ decision := "DENY" if not allow`
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Policy Management</h1>
-          <p className="text-gray-600">Configure AI governance policies for your organization</p>
+          <h1 className="text-3xl font-light bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent mb-2">Policy Management</h1>
+          <p className="text-gray-400">Configure AI governance policies for your organization</p>
         </div>
 
         {/* Current Policy Status */}
         {currentPolicy && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-green-500/20 p-6 mb-6 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5 text-green-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{currentPolicy.name}</h3>
-                  <p className="text-sm text-gray-500">
+                  <h3 className="font-light text-white text-lg">{currentPolicy.name}</h3>
+                  <p className="text-sm text-gray-400 font-mono">
                     Last modified: {new Date(currentPolicy.lastModified).toLocaleString()}
                   </p>
-                  <p className="text-sm text-gray-500">By: {currentPolicy.modifiedBy}</p>
+                  <p className="text-sm text-gray-400">By: {currentPolicy.modifiedBy}</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                className="px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-violet-500/20 border border-cyan-500/30 text-cyan-400 rounded-lg hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all flex items-center gap-2"
               >
                 <Settings className="w-4 h-4" />
                 Edit Policy
@@ -249,9 +249,9 @@ decision := "DENY" if not allow`
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Policy Templates */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5" />
+            <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-violet-500/20 p-6 shadow-[0_0_20px_rgba(139,92,246,0.1)]">
+              <h2 className="text-lg font-light text-white mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-violet-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
                 Policy Templates
               </h2>
               <div className="space-y-3">
@@ -261,25 +261,25 @@ decision := "DENY" if not allow`
                     onClick={() => loadTemplate(template.id)}
                     className={`w-full text-left p-4 rounded-lg border transition-all ${
                       selectedTemplate === template.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-cyan-500/50 bg-cyan-500/10 shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                        : 'border-slate-700/50 hover:border-cyan-500/30 hover:bg-slate-800/30'
                     }`}
                   >
-                    <div className="font-medium text-gray-900 mb-1">{template.name}</div>
-                    <div className="text-sm text-gray-600 mb-2">{template.description}</div>
+                    <div className="font-light text-white mb-1">{template.name}</div>
+                    <div className="text-sm text-gray-400 mb-2">{template.description}</div>
                     <div className="text-xs text-gray-500 italic">{template.useCase}</div>
                   </button>
                 ))}
               </div>
 
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <h3 className="font-medium text-gray-900 mb-3">Quick Actions</h3>
+              <div className="mt-6 pt-6 border-t border-slate-700/50">
+                <h3 className="font-light text-white mb-3 uppercase text-xs tracking-wide text-gray-500">Quick Actions</h3>
                 <div className="space-y-2">
-                  <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2 text-sm">
+                  <button className="w-full px-4 py-2 bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-orange-500/20 text-orange-400 rounded-lg hover:border-orange-500/40 hover:shadow-[0_0_15px_rgba(249,115,22,0.2)] transition-all flex items-center gap-2 text-sm">
                     <Upload className="w-4 h-4" />
                     Upload Custom Policy
                   </button>
-                  <button className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2 text-sm">
+                  <button className="w-full px-4 py-2 bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-cyan-500/20 text-cyan-400 rounded-lg hover:border-cyan-500/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all flex items-center gap-2 text-sm">
                     <Download className="w-4 h-4" />
                     Export Current Policy
                   </button>
@@ -291,25 +291,25 @@ decision := "DENY" if not allow`
           {/* Policy Editor */}
           <div className="lg:col-span-2">
             {isEditing ? (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-cyan-500/20 p-6 shadow-[0_0_20px_rgba(34,211,238,0.1)]">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">Policy Editor</h2>
+                  <h2 className="text-lg font-light text-white">Policy Editor</h2>
                   <div className="flex items-center gap-2">
                     {saveStatus === 'success' && (
-                      <span className="text-sm text-green-600 flex items-center gap-1">
+                      <span className="text-sm text-green-400 flex items-center gap-1 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-lg">
                         <CheckCircle className="w-4 h-4" />
                         Saved successfully
                       </span>
                     )}
                     {saveStatus === 'error' && (
-                      <span className="text-sm text-red-600 flex items-center gap-1">
+                      <span className="text-sm text-red-400 flex items-center gap-1 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg">
                         <AlertCircle className="w-4 h-4" />
                         Save failed
                       </span>
                     )}
                     <button
                       onClick={downloadPolicy}
-                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
+                      className="px-4 py-2 bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-violet-500/20 text-violet-400 rounded-lg hover:border-violet-500/40 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)] transition-all flex items-center gap-2"
                     >
                       <Download className="w-4 h-4" />
                       Download
@@ -317,7 +317,7 @@ decision := "DENY" if not allow`
                     <button
                       onClick={savePolicy}
                       disabled={saveStatus === 'saving'}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50"
+                      className="px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-violet-500/20 border border-cyan-500/30 text-cyan-400 rounded-lg hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all flex items-center gap-2 disabled:opacity-50"
                     >
                       <Save className="w-4 h-4" />
                       {saveStatus === 'saving' ? 'Saving...' : 'Save Policy'}
@@ -325,7 +325,7 @@ decision := "DENY" if not allow`
                     <button
                       onClick={activatePolicy}
                       disabled={activateLoading || !selectedTemplate}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 disabled:opacity-50"
+                      className="px-4 py-2 bg-gradient-to-r from-green-500/20 to-cyan-500/20 border border-green-500/30 text-green-400 rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all flex items-center gap-2 disabled:opacity-50"
                     >
                       <CheckCircle className="w-4 h-4" />
                       {activateLoading ? 'Activating...' : 'Activate Policy'}
@@ -335,12 +335,12 @@ decision := "DENY" if not allow`
                 <textarea
                   value={policyContent}
                   onChange={(e) => setPolicyContent(e.target.value)}
-                  className="w-full h-[600px] font-mono text-sm border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full h-[600px] font-mono text-sm bg-slate-950/50 border border-cyan-500/20 text-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 focus:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all"
                   placeholder="Select a template or write your custom policy..."
                 />
-                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h4 className="font-medium text-blue-900 mb-2">Policy Syntax Tips:</h4>
-                  <ul className="text-sm text-blue-800 space-y-1">
+                <div className="mt-4 p-4 bg-gradient-to-r from-cyan-500/10 to-violet-500/10 border border-cyan-500/20 rounded-lg">
+                  <h4 className="font-light text-cyan-400 mb-2 uppercase text-xs tracking-wide">Policy Syntax Tips:</h4>
+                  <ul className="text-sm text-gray-400 space-y-1">
                     <li>• Use OPA Rego syntax</li>
                     <li>• Test your policy before deploying</li>
                     <li>• Add comments to explain complex rules</li>
@@ -349,15 +349,15 @@ decision := "DENY" if not allow`
                 </div>
               </div>
             ) : (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-                <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Policy Selected</h3>
-                <p className="text-gray-600 mb-6">
+              <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-slate-700/50 p-12 text-center">
+                <FileText className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-light text-white mb-2">No Policy Selected</h3>
+                <p className="text-gray-400 mb-6">
                   Select a policy template from the left sidebar or edit the current policy
                 </p>
                 <button
                   onClick={() => loadTemplate('balanced')}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="px-6 py-3 bg-gradient-to-r from-cyan-500/20 to-violet-500/20 border border-cyan-500/30 text-cyan-400 rounded-lg hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all"
                 >
                   Load Balanced Policy
                 </button>

@@ -117,21 +117,21 @@ export default function UnknownServicesPage() {
     switch (status) {
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-            <Clock className="w-3 h-3" />
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-orange-500/20 text-orange-400 border border-orange-500/30">
+            <Clock className="w-3 h-3 animate-pulse" />
             Pending Review
           </span>
         )
       case 'approved':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
             <CheckCircle className="w-3 h-3" />
             Approved
           </span>
         )
       case 'blocked':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">
             <XCircle className="w-3 h-3" />
             Blocked
           </span>
@@ -140,91 +140,91 @@ export default function UnknownServicesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Unknown AI Services</h1>
-          <p className="text-gray-600">Review and approve/block new AI services detected by the system</p>
+          <h1 className="text-3xl font-light bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent mb-2">Unknown AI Services</h1>
+          <p className="text-gray-400">Review and approve/block new AI services detected by the system</p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-orange-500/20 p-6 hover:border-orange-500/40 transition-all hover:shadow-[0_0_30px_rgba(249,115,22,0.2)]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Pending Review</p>
-                <p className="text-3xl font-bold text-yellow-600">
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Pending Review</p>
+                <p className="text-3xl font-mono font-light text-orange-400">
                   {services.filter(s => s.status === 'pending').length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                <Clock className="w-6 h-6 text-yellow-600" />
+              <div className="p-3 bg-orange-500/10 border border-orange-500/20 rounded-full">
+                <Clock className="w-6 h-6 text-orange-400 drop-shadow-[0_0_10px_rgba(249,115,22,0.6)] animate-pulse" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-green-500/20 p-6 hover:border-green-500/40 transition-all hover:shadow-[0_0_30px_rgba(34,197,94,0.2)]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Approved</p>
-                <p className="text-3xl font-bold text-green-600">
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Approved</p>
+                <p className="text-3xl font-mono font-light text-green-400">
                   {services.filter(s => s.status === 'approved').length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-green-600" />
+              <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-full">
+                <CheckCircle className="w-6 h-6 text-green-400 drop-shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-red-500/20 p-6 hover:border-red-500/40 transition-all hover:shadow-[0_0_30px_rgba(239,68,68,0.2)]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Blocked</p>
-                <p className="text-3xl font-bold text-red-600">
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Blocked</p>
+                <p className="text-3xl font-mono font-light text-red-400">
                   {services.filter(s => s.status === 'blocked').length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                <XCircle className="w-6 h-6 text-red-600" />
+              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-full">
+                <XCircle className="w-6 h-6 text-red-400 drop-shadow-[0_0_10px_rgba(239,68,68,0.6)]" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Filter */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-violet-500/20 p-4 mb-6">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Filter:</span>
+            <span className="text-sm text-gray-400 uppercase tracking-wide font-medium">Filter:</span>
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                filter === 'all' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                filter === 'all' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-slate-800/50 text-gray-400 border border-slate-700/50 hover:border-cyan-500/30'
               }`}
             >
               All ({services.length})
             </button>
             <button
               onClick={() => setFilter('pending')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                filter === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                filter === 'pending' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-slate-800/50 text-gray-400 border border-slate-700/50 hover:border-orange-500/30'
               }`}
             >
               Pending ({services.filter(s => s.status === 'pending').length})
             </button>
             <button
               onClick={() => setFilter('approved')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                filter === 'approved' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                filter === 'approved' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-slate-800/50 text-gray-400 border border-slate-700/50 hover:border-green-500/30'
               }`}
             >
               Approved ({services.filter(s => s.status === 'approved').length})
             </button>
             <button
               onClick={() => setFilter('blocked')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                filter === 'blocked' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                filter === 'blocked' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-slate-800/50 text-gray-400 border border-slate-700/50 hover:border-red-500/30'
               }`}
             >
               Blocked ({services.filter(s => s.status === 'blocked').length})
@@ -233,47 +233,47 @@ export default function UnknownServicesPage() {
         </div>
 
         {/* Services List */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-cyan-500/20 overflow-hidden shadow-[0_0_20px_rgba(34,211,238,0.1)]">
           {filteredServices.length === 0 ? (
-            <div className="p-12 text-center text-gray-500">
-              <Globe className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-lg">No {filter !== 'all' && filter} services found</p>
+            <div className="p-12 text-center">
+              <Globe className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+              <p className="text-lg text-gray-400">No {filter !== 'all' && filter} services found</p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-slate-800/50">
               {filteredServices.map((service) => (
-                <div key={service.id} className="p-6 hover:bg-gray-50">
+                <div key={service.id} className="p-6 hover:bg-slate-800/30 transition-colors">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <Globe className="w-5 h-5 text-blue-600" />
-                        <h3 className="text-lg font-semibold text-gray-900">{service.domain}</h3>
+                        <Globe className="w-5 h-5 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
+                        <h3 className="text-lg font-light text-white">{service.domain}</h3>
                         {getStatusBadge(service.status)}
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">{service.url}</p>
+                      <p className="text-sm text-gray-400 mb-3 font-mono">{service.url}</p>
 
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="text-gray-600">Detected by:</span>
+                          <span className="text-xs uppercase tracking-wide text-gray-500 font-medium">Detected by:</span>
                           <div className="mt-1 flex items-center gap-2">
-                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                              <User className="w-4 h-4 text-blue-600" />
+                            <div className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center">
+                              <User className="w-4 h-4 text-violet-400" />
                             </div>
                             <div>
-                              <div className="font-medium text-gray-900">{service.detectedBy.name}</div>
+                              <div className="font-light text-white">{service.detectedBy.name}</div>
                               <div className="text-xs text-gray-500">{service.detectedBy.email}</div>
                             </div>
                           </div>
                         </div>
 
                         <div>
-                          <span className="text-gray-600">Detection details:</span>
+                          <span className="text-xs uppercase tracking-wide text-gray-500 font-medium">Detection details:</span>
                           <div className="mt-1">
-                            <div className="text-gray-900">
+                            <div className="text-gray-400 font-mono text-xs">
                               First seen: {new Date(service.detectedAt).toLocaleString()}
                             </div>
-                            <div className="text-gray-900">
-                              Total attempts: <span className="font-semibold">{service.occurrences}</span>
+                            <div className="text-gray-300 mt-1">
+                              Total attempts: <span className="font-mono font-semibold text-orange-400">{service.occurrences}</span>
                             </div>
                           </div>
                         </div>
@@ -284,14 +284,14 @@ export default function UnknownServicesPage() {
                       <div className="ml-6 flex flex-col gap-2">
                         <button
                           onClick={() => approveService(service)}
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+                          className="px-4 py-2 bg-gradient-to-r from-green-500/20 to-cyan-500/20 border border-green-500/30 text-green-400 rounded-lg hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all flex items-center gap-2"
                         >
                           <CheckCircle className="w-4 h-4" />
                           Approve
                         </button>
                         <button
                           onClick={() => blockService(service)}
-                          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2"
+                          className="px-4 py-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 text-red-400 rounded-lg hover:shadow-[0_0_20px_rgba(239,68,68,0.3)] transition-all flex items-center gap-2"
                         >
                           <XCircle className="w-4 h-4" />
                           Block

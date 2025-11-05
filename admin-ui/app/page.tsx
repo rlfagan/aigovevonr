@@ -62,9 +62,9 @@ export default function Dashboard() {
 
   const getDecisionIcon = (decision: string) => {
     switch (decision) {
-      case 'ALLOW': return <CheckCircle className="h-4 w-4 text-green-500" />
-      case 'DENY': return <XCircle className="h-4 w-4 text-red-500" />
-      case 'REVIEW': return <AlertTriangle className="h-4 w-4 text-yellow-500" />
+      case 'ALLOW': return <CheckCircle className="h-4 w-4 text-green-400" />
+      case 'DENY': return <XCircle className="h-4 w-4 text-red-400" />
+      case 'REVIEW': return <AlertTriangle className="h-4 w-4 text-orange-400" />
       default: return null
     }
   }
@@ -79,25 +79,25 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Header */}
-      <header className="border-b bg-white dark:bg-slate-900 shadow-sm">
+      <header className="border-b border-cyan-500/20 bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm shadow-[0_0_20px_rgba(34,211,238,0.1)]">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Shield className="h-8 w-8 text-blue-600" />
+              <Shield className="h-8 w-8 text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">AI Governance Platform</h1>
-                <p className="text-sm text-slate-600 dark:text-slate-400">Enterprise Policy Management & Enforcement</p>
+                <h1 className="text-2xl font-light bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">AI Governance Platform</h1>
+                <p className="text-sm text-gray-400">Enterprise Policy Management & Enforcement</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${
-                apiHealth === 'healthy' ? 'bg-green-100 text-green-800' :
-                apiHealth === 'unhealthy' ? 'bg-red-100 text-red-800' :
-                'bg-gray-100 text-gray-800'
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border ${
+                apiHealth === 'healthy' ? 'bg-gradient-to-r from-green-500/20 to-cyan-500/20 border-green-500/30 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.3)]' :
+                apiHealth === 'unhealthy' ? 'bg-gradient-to-r from-red-500/20 to-orange-500/20 border-red-500/30 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.3)]' :
+                'bg-gradient-to-r from-gray-500/20 to-slate-500/20 border-gray-500/30 text-gray-400'
               }`}>
-                <Activity className="h-4 w-4" />
+                <Activity className={`h-4 w-4 ${apiHealth === 'healthy' ? 'animate-pulse' : ''}`} />
                 {apiHealth === 'healthy' ? 'System Healthy' : apiHealth === 'unhealthy' ? 'System Down' : 'Checking...'}
               </div>
             </div>
@@ -110,102 +110,118 @@ export default function Dashboard() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* Total Requests */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 border border-slate-200 dark:border-slate-700">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-cyan-500/20 hover:border-cyan-500/40 transition-all hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Requests</h3>
-              <Activity className="h-5 w-5 text-blue-600" />
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Requests</h3>
+              <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                <Activity className="h-5 w-5 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
+              </div>
             </div>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white">{stats.totalRequests.toLocaleString()}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">Last 24 hours</p>
+            <p className="text-3xl font-mono font-light text-white mb-1">{stats.totalRequests.toLocaleString()}</p>
+            <p className="text-sm text-gray-400">Last 24 hours</p>
           </div>
 
           {/* Allowed */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 border border-slate-200 dark:border-slate-700">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-green-500/20 hover:border-green-500/40 transition-all hover:shadow-[0_0_30px_rgba(34,197,94,0.2)]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Allowed</h3>
-              <CheckCircle className="h-5 w-5 text-green-600" />
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Allowed</h3>
+              <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/20">
+                <CheckCircle className="h-5 w-5 text-green-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+              </div>
             </div>
-            <p className="text-3xl font-bold text-green-600">{stats.allowed.toLocaleString()}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{Math.round((stats.allowed / stats.totalRequests) * 100)}% of requests</p>
+            <p className="text-3xl font-mono font-light text-green-400 mb-1">{stats.allowed.toLocaleString()}</p>
+            <p className="text-sm text-gray-400">{Math.round((stats.allowed / stats.totalRequests) * 100)}% of requests</p>
           </div>
 
           {/* Denied */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 border border-slate-200 dark:border-slate-700">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-red-500/20 hover:border-red-500/40 transition-all hover:shadow-[0_0_30px_rgba(239,68,68,0.2)]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Denied</h3>
-              <XCircle className="h-5 w-5 text-red-600" />
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Denied</h3>
+              <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
+                <XCircle className="h-5 w-5 text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
+              </div>
             </div>
-            <p className="text-3xl font-bold text-red-600">{stats.denied.toLocaleString()}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{Math.round((stats.denied / stats.totalRequests) * 100)}% of requests</p>
+            <p className="text-3xl font-mono font-light text-red-400 mb-1">{stats.denied.toLocaleString()}</p>
+            <p className="text-sm text-gray-400">{Math.round((stats.denied / stats.totalRequests) * 100)}% of requests</p>
           </div>
 
           {/* Needs Review */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 border border-slate-200 dark:border-slate-700">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-orange-500/20 hover:border-orange-500/40 transition-all hover:shadow-[0_0_30px_rgba(249,115,22,0.2)]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Needs Review</h3>
-              <AlertTriangle className="h-5 w-5 text-yellow-600" />
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Needs Review</h3>
+              <div className="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
+                <AlertTriangle className="h-5 w-5 text-orange-400 drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]" />
+              </div>
             </div>
-            <p className="text-3xl font-bold text-yellow-600">{stats.reviewed.toLocaleString()}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{Math.round((stats.reviewed / stats.totalRequests) * 100)}% of requests</p>
+            <p className="text-3xl font-mono font-light text-orange-400 mb-1">{stats.reviewed.toLocaleString()}</p>
+            <p className="text-sm text-gray-400">{Math.round((stats.reviewed / stats.totalRequests) * 100)}% of requests</p>
           </div>
 
           {/* Active Users */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 border border-slate-200 dark:border-slate-700">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-violet-500/20 hover:border-violet-500/40 transition-all hover:shadow-[0_0_30px_rgba(139,92,246,0.2)]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Active Users</h3>
-              <Users className="h-5 w-5 text-purple-600" />
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Active Users</h3>
+              <div className="p-2 rounded-lg bg-violet-500/10 border border-violet-500/20">
+                <Users className="h-5 w-5 text-violet-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
+              </div>
             </div>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white">{stats.activeUsers.toLocaleString()}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">Currently online</p>
+            <p className="text-3xl font-mono font-light text-white mb-1">{stats.activeUsers.toLocaleString()}</p>
+            <p className="text-sm text-gray-400">Currently online</p>
           </div>
 
           {/* Active Policies */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 border border-slate-200 dark:border-slate-700">
+          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-cyan-500/20 hover:border-cyan-500/40 transition-all hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Active Policies</h3>
-              <FileText className="h-5 w-5 text-indigo-600" />
+              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">Active Policies</h3>
+              <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                <FileText className="h-5 w-5 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
+              </div>
             </div>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white">{stats.activePolicies.toLocaleString()}</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">Enforcing now</p>
+            <p className="text-3xl font-mono font-light text-white mb-1">{stats.activePolicies.toLocaleString()}</p>
+            <p className="text-sm text-gray-400">Enforcing now</p>
           </div>
         </div>
 
         {/* Recent Decisions */}
-        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700">
-          <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-violet-500/20 shadow-[0_0_20px_rgba(139,92,246,0.1)]">
+          <div className="px-6 py-4 border-b border-violet-500/20">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-slate-600 dark:text-slate-400" />
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Recent Decisions</h2>
+              <TrendingUp className="h-5 w-5 text-violet-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
+              <h2 className="text-lg font-light text-white">Recent Decisions</h2>
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-slate-50 dark:bg-slate-900">
+              <thead className="bg-slate-900/80">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Timestamp</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">User</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Service</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Action</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Decision</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Decision</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+              <tbody className="divide-y divide-slate-800/50">
                 {recentDecisions.map((decision) => (
-                  <tr key={decision.id} className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-slate-300">
+                  <tr key={decision.id} className="hover:bg-slate-800/30 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-300">
                       {new Date(decision.timestamp).toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                       {decision.user}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                       {decision.service}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                       {decision.action}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${getDecisionColor(decision.decision)}`}>
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                        decision.decision === 'ALLOW' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                        decision.decision === 'DENY' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                        'bg-orange-500/20 text-orange-400 border-orange-500/30'
+                      }`}>
                         {getDecisionIcon(decision.decision)}
                         {decision.decision}
                       </span>
@@ -220,32 +236,32 @@ export default function Dashboard() {
         {/* Quick Links */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer"
-             className="block p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Grafana Dashboards</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400">View detailed metrics and analytics</p>
-            <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">localhost:3000 →</p>
+             className="block p-6 bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-cyan-500/20 hover:border-cyan-500/40 hover:shadow-[0_0_30px_rgba(34,211,238,0.3)] transition-all group">
+            <h3 className="text-lg font-light text-white mb-2 group-hover:text-cyan-400 transition-colors">Grafana Dashboards</h3>
+            <p className="text-sm text-gray-400">View detailed metrics and analytics</p>
+            <p className="text-xs text-cyan-400 mt-2 font-mono">localhost:3000 →</p>
           </a>
 
           <a href="http://localhost:9090" target="_blank" rel="noopener noreferrer"
-             className="block p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Prometheus Metrics</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Query system metrics directly</p>
-            <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">localhost:9090 →</p>
+             className="block p-6 bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-violet-500/20 hover:border-violet-500/40 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] transition-all group">
+            <h3 className="text-lg font-light text-white mb-2 group-hover:text-violet-400 transition-colors">Prometheus Metrics</h3>
+            <p className="text-sm text-gray-400">Query system metrics directly</p>
+            <p className="text-xs text-violet-400 mt-2 font-mono">localhost:9090 →</p>
           </a>
 
           <a href="http://localhost:8002/docs" target="_blank" rel="noopener noreferrer"
-             className="block p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">API Documentation</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Explore API endpoints</p>
-            <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">localhost:8002/docs →</p>
+             className="block p-6 bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm rounded-lg border border-orange-500/20 hover:border-orange-500/40 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)] transition-all group">
+            <h3 className="text-lg font-light text-white mb-2 group-hover:text-orange-400 transition-colors">API Documentation</h3>
+            <p className="text-sm text-gray-400">Explore API endpoints</p>
+            <p className="text-xs text-orange-400 mt-2 font-mono">localhost:8002/docs →</p>
           </a>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-white dark:bg-slate-900 mt-12">
+      <footer className="border-t border-cyan-500/20 bg-gradient-to-br from-slate-900/50 to-slate-800/50 backdrop-blur-sm mt-12">
         <div className="container mx-auto px-6 py-4">
-          <p className="text-center text-sm text-slate-600 dark:text-slate-400">
+          <p className="text-center text-sm text-gray-400 font-mono">
             AI Governance Platform v1.0.0 | 100% Open Source | Zero Budget Implementation
           </p>
         </div>

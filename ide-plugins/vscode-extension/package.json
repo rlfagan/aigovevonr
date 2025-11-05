@@ -1,0 +1,173 @@
+{
+  "name": "ai-governance-shield",
+  "displayName": "AI Governance Shield",
+  "description": "Enterprise AI policy enforcement for VS Code - monitors GitHub Copilot, Cursor, and other AI coding assistants",
+  "version": "0.1.0",
+  "publisher": "ai-governance",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rlfagan/aigovevonr"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Linters"
+  ],
+  "keywords": [
+    "ai",
+    "governance",
+    "policy",
+    "copilot",
+    "security",
+    "compliance",
+    "pii",
+    "data-protection"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:ai-governance.enableProtection",
+    "onCommand:ai-governance.disableProtection",
+    "onCommand:ai-governance.checkPolicy",
+    "onCommand:ai-governance.showSettings"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ai-governance.enableProtection",
+        "title": "AI Governance: Enable Protection"
+      },
+      {
+        "command": "ai-governance.disableProtection",
+        "title": "AI Governance: Disable Protection"
+      },
+      {
+        "command": "ai-governance.checkPolicy",
+        "title": "AI Governance: Check Current Policy"
+      },
+      {
+        "command": "ai-governance.showSettings",
+        "title": "AI Governance: Open Settings"
+      },
+      {
+        "command": "ai-governance.requestOverride",
+        "title": "AI Governance: Request Admin Override"
+      },
+      {
+        "command": "ai-governance.scanCurrentFile",
+        "title": "AI Governance: Scan Current File"
+      }
+    ],
+    "configuration": {
+      "title": "AI Governance Shield",
+      "properties": {
+        "aiGovernance.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable AI Governance protection"
+        },
+        "aiGovernance.apiUrl": {
+          "type": "string",
+          "default": "http://localhost:8002",
+          "description": "AI Governance Decision API URL"
+        },
+        "aiGovernance.userEmail": {
+          "type": "string",
+          "default": "",
+          "description": "User email for policy enforcement"
+        },
+        "aiGovernance.department": {
+          "type": "string",
+          "default": "",
+          "description": "User department"
+        },
+        "aiGovernance.blockOnDeny": {
+          "type": "boolean",
+          "default": true,
+          "description": "Block AI assistants when policy denies access"
+        },
+        "aiGovernance.scanContent": {
+          "type": "boolean",
+          "default": true,
+          "description": "Scan code content for PII and sensitive data"
+        },
+        "aiGovernance.notifyOnViolation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notifications on policy violations"
+        },
+        "aiGovernance.logViolations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Log violations to Decision API"
+        },
+        "aiGovernance.checkInterval": {
+          "type": "number",
+          "default": 60,
+          "description": "Policy check interval in seconds"
+        },
+        "aiGovernance.offlineMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable offline mode (cached policies only)"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ai-governance",
+          "title": "AI Governance",
+          "icon": "images/shield.svg"
+        }
+      ]
+    },
+    "views": {
+      "ai-governance": [
+        {
+          "id": "ai-governance-status",
+          "name": "Protection Status"
+        },
+        {
+          "id": "ai-governance-violations",
+          "name": "Recent Violations"
+        },
+        {
+          "id": "ai-governance-detected",
+          "name": "Detected AI Tools"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vscode/test-electron": "^2.3.8",
+    "eslint": "^8.56.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0",
+    "typescript": "^5.3.3",
+    "@vscode/vsce": "^2.22.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.5"
+  }
+}

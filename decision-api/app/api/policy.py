@@ -12,8 +12,9 @@ from datetime import datetime
 router = APIRouter()
 
 # Path to store active policy configuration
-ACTIVE_POLICY_FILE = Path("/app/data/active_policy.json")
-POLICIES_DIR = Path("/policies")
+BASE_DIR = Path(__file__).parent.parent.parent
+ACTIVE_POLICY_FILE = BASE_DIR / "data" / "active_policy.json"
+POLICIES_DIR = BASE_DIR.parent / "policies"
 
 class PolicyConfig(BaseModel):
     policy_name: str

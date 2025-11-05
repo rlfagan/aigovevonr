@@ -16,8 +16,13 @@ import time
 from datetime import datetime
 import hashlib
 
-# Import policy router
+# Import routers
 from app.api.policy import router as policy_router
+from app.api.iam import router as iam_router, set_db_pool
+from app.api.config import router as config_router
+from app.api.zscaler import router as zscaler_router, set_db_pool as set_zscaler_db_pool
+from app.api.netskope import router as netskope_router, set_db_pool as set_netskope_db_pool
+from app.api.guardrails import router as guardrails_router
 
 # Configuration from environment
 OPA_URL = os.getenv("OPA_URL", "http://localhost:8181")
@@ -41,8 +46,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include policy router
+# Include routers
 app.include_router(policy_router)
+app.include_router(iam_router)
+app.include_router(config_router)
+app.include_router(zscaler_router)
+app.include_router(netskope_router)
+app.include_router(guardrails_router)
 
 # Global connections
 db_pool = None
@@ -114,6 +124,12 @@ async def startup():
             command_timeout=60
         )
         print("✅ Database connection pool created")
+
+        # Set db_pool for routers
+        set_db_pool(db_pool)
+        set_zscaler_db_pool(db_pool)
+        set_netskope_db_pool(db_pool)
+        print("✅ Routers initialized (IAM, Zscaler, Netskope)")
     except Exception as e:
         print(f"❌ Failed to connect to database: {e}")
 
@@ -188,14 +204,18 @@ async def call_opa(policy_input: Dict) -> Dict:
     """Call OPA policy engine"""
     async with httpx.AsyncClient(timeout=5.0) as client:
         try:
+            print(f"🔍 Calling OPA at {OPA_URL}/v1/data/ai_governance")
+            print(f"🔍 Input: {json.dumps(policy_input, indent=2)}")
             response = await client.post(
-                f"{OPA_URL}/v1/data/aigovernance",
+                f"{OPA_URL}/v1/data/ai_governance",
                 json={"input": policy_input}
             )
             response.raise_for_status()
-            return response.json()
+            opa_response = response.json()
+            print(f"🔍 OPA Response: {json.dumps(opa_response, indent=2)}")
+            return opa_response
         except httpx.HTTPError as e:
-            print(f"OPA call failed: {e}")
+            print(f"❌ OPA call failed: {e}")
             raise HTTPException(status_code=503, detail="Policy engine unavailable")
 
 
